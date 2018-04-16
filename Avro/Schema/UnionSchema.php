@@ -36,7 +36,9 @@ class UnionSchema extends Schema
             }
 
             $schemaType = $newSchema->type;
-            if (self::isValidType($schemaType) && !self::isNamedType($schemaType)
+            if (self::ERROR_SCHEMA !== $schemaType
+                && self::isValidType($schemaType)
+                && !self::isNamedType($schemaType)
                 && in_array($schemaType, $schemaTypes, true)
             ) {
                 throw new SchemaParseException(sprintf('"%s" is already in union', $schemaType));
