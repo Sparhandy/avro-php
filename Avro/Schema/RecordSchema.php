@@ -48,6 +48,7 @@ class RecordSchema extends NamedSchema
             $name = Util::arrayValue($field, Field::FIELD_NAME_ATTR);
             $type = Util::arrayValue($field, Schema::TYPE_ATTR);
             $order = Util::arrayValue($field, Field::ORDER_ATTR);
+            $doc = Util::arrayValue($field, Field::DOC_ATTR);
 
             $default = null;
             $hasDefault = false;
@@ -69,7 +70,7 @@ class RecordSchema extends NamedSchema
                 $fieldSchema = self::subparse($type, $defaultNamespace, $schemata);
             }
 
-            $newField = new Field($name, $fieldSchema, $isSchemaFromSchemata, $hasDefault, $default, $order);
+            $newField = new Field($name, $fieldSchema, $isSchemaFromSchemata, $hasDefault, $default, $order, $doc);
             $fieldNames[] = $name;
             $fields[] = $newField;
         }

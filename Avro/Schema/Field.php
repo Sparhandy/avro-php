@@ -24,10 +24,11 @@ class Field extends Schema
     ];
 
     private $name;
+    private $isTypeFromSchemata;
     private $hasDefault;
     private $default;
     private $order;
-    private $isTypeFromSchemata;
+    private $doc;
 
     /**
      * @param mixed $default
@@ -41,11 +42,14 @@ class Field extends Schema
         bool $isTypeFromSchemata,
         bool $hasDefault,
         $default,
-        ?string $order = null
+        ?string $order = null,
+        ?string $doc = null
     ) {
         if (!Name::isWellFormedName($name)) {
             throw new SchemaParseException('Field requires a "name" attribute');
         }
+
+        $this->checkOrderValue($order);
 
         parent::__construct($schema);
 
@@ -53,8 +57,8 @@ class Field extends Schema
         $this->isTypeFromSchemata = $isTypeFromSchemata;
         $this->hasDefault = $hasDefault;
         $this->default = $default;
-        $this->checkOrderValue($order);
         $this->order = $order;
+        $this->doc = $doc;
     }
 
     public function toAvro(): array
@@ -67,8 +71,12 @@ class Field extends Schema
             $avro[self::DEFAULT_ATTR] = $this->default;
         }
 
-        if ($this->order) {
+        if (null !== $this->order) {
             $avro[self::ORDER_ATTR] = $this->order;
+        }
+
+        if (null !== $this->doc) {
+            $avro[self::DOC_ATTR] = $this->doc;
         }
 
         return $avro;
