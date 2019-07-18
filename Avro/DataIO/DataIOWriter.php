@@ -24,7 +24,7 @@ class DataIOWriter
     private $metadata;
     private $syncMarker;
 
-    public function __construct(IO $io, IODatumWriter $datumWriter, Schema $writersSchema = null)
+    public function __construct(IO $io, IODatumWriter $datumWriter, Schema $writersSchema = null, string $codec = DataIO::NULL_CODEC)
     {
         $this->io = $io;
         $this->encoder = new IOBinaryEncoder($this->io);
@@ -36,7 +36,7 @@ class DataIOWriter
 
         if ($writersSchema) {
             $this->syncMarker = self::generateSyncMarker();
-            $this->metadata[DataIO::METADATA_CODEC_ATTR] = DataIO::NULL_CODEC;
+            $this->metadata[DataIO::METADATA_CODEC_ATTR] = $codec;
             $this->metadata[DataIO::METADATA_SCHEMA_ATTR] = (string) $writersSchema;
             $this->writeHeader();
         } else {
@@ -104,7 +104,10 @@ class DataIOWriter
     {
         if ($this->blockCount > 0) {
             $this->encoder->writeLong($this->blockCount);
-            $toWrite = (string) $this->buffer;
+            $toWrite = (string)$this->buffer;
+            if ($this->metadata[DataIO::METADATA_CODEC_ATTR] == DataIO::DEFLATE_CODEC) {
+                $toWrite = gzdeflate($toWrite);
+            }
             $this->encoder->writeLong(strlen($toWrite));
 
             if (!DataIO::isValidCodec($this->metadata[DataIO::METADATA_CODEC_ATTR])) {

@@ -42,7 +42,7 @@ class DataIO
     /**
      * @todo Avro implementations are required to implement deflate codec as well, so implement it already!
      */
-    private static $validCodecs = [self::NULL_CODEC];
+    private static $validCodecs = [self::NULL_CODEC, self::DEFLATE_CODEC];
 
     /**
      * @var Schema|null
@@ -80,7 +80,7 @@ class DataIO
     /**
      * @return DataIOReader|DataIOWriter
      */
-    public static function openFile(string $filePath, string $mode = File::READ_MODE, ?string $schemaJson = null)
+    public static function openFile(string $filePath, string $mode = File::READ_MODE, ?string $schemaJson = null, string $codec = self::NULL_CODEC)
     {
         $schema = null !== $schemaJson ? Schema::parse($schemaJson) : null;
 
@@ -89,7 +89,7 @@ class DataIO
                 throw new DataIOException('Writing an Avro file requires a schema.');
             }
 
-            return self::openWriter(new File($filePath, File::WRITE_MODE), $schema);
+            return self::openWriter(new File($filePath, File::WRITE_MODE), $schema, $codec);
         }
 
         if (File::READ_MODE === $mode) {
@@ -101,14 +101,19 @@ class DataIO
         );
     }
 
+    public static function getValidCodecs(): array
+    {
+        return self::$validCodecs;
+    }
+
     public static function isValidCodec(string $codec): bool
     {
         return in_array($codec, self::$validCodecs, true);
     }
 
-    private static function openWriter(IO $io, Schema $schema): DataIOWriter
+    private static function openWriter(IO $io, Schema $schema, string $codec = DataIO::NULL_CODEC): DataIOWriter
     {
-        return new DataIOWriter($io, new IODatumWriter($schema), $schema);
+        return new DataIOWriter($io, new IODatumWriter($schema), $schema, $codec);
     }
 
     private static function openReader(IO $io, Schema $schema = null): DataIOReader
