@@ -6,6 +6,7 @@ use Avro\Datum\IOBinaryDecoder;
 use Avro\Datum\IODatumReader;
 use Avro\Exception\DataIoException;
 use Avro\IO\IO;
+use Avro\IO\StringIO;
 use Avro\Schema\Schema;
 use Avro\Util\Util;
 
@@ -59,9 +60,17 @@ class DataIOReader
                     break;
                 }
 
-                $this->readBlockHeader();
+                $length = $this->readBlockHeader();
+                $decoder = $this->decoder;
+
+                if ($this->metadata[DataIO::METADATA_CODEC_ATTR] == DataIO::DEFLATE_CODEC) {
+                    $compressed = $this->decoder->read($length);
+                    $datum = gzinflate($compressed);
+                    $decoder = new IOBinaryDecoder(new StringIO($datum));
+                }
             }
-            $data[] = $this->datumReader->read($this->decoder);
+
+            $data[] = $this->datumReader->read($decoder);
             --$this->blockCount;
         }
 

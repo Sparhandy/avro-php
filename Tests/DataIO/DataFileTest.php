@@ -32,129 +32,144 @@ class DataFileTest extends TestCase
 
     public function testWriteReadNothingRoundTrip(): void
     {
-        $dataFile = $this->addDataFile('data-wr-nothing-null.avr');
-        $writersSchema = '"null"';
-        $dw = DataIO::openFile($dataFile, 'w', $writersSchema);
-        $dw->close();
+        foreach (DataIO::getValidCodecs() as $codec) {
+            $dataFile = $this->addDataFile(sprintf('data-wr-nothing-null-%s.avr', $codec));
+            $writersSchema = '"null"';
+            $dw = DataIO::openFile($dataFile, 'w', $writersSchema, $codec);
+            $dw->close();
 
-        $dr = DataIO::openFile($dataFile);
-        $drData = (array) $dr->data();
-        $readData = array_shift($drData);
-        $dr->close();
-        $this->assertNull($readData);
+            $dr = DataIO::openFile($dataFile);
+            $drData = (array) $dr->data();
+            $readData = array_shift($drData);
+            $dr->close();
+            $this->assertNull($readData);
+        }
     }
 
     public function testWriteReadNullRoundTrip(): void
     {
-        $dataFile = $this->addDataFile('data-wr-null.avr');
-        $writersSchema = '"null"';
-        $data = null;
-        $dw = DataIO::openFile($dataFile, 'w', $writersSchema);
-        $dw->append($data);
-        $dw->close();
+        foreach (DataIO::getValidCodecs() as $codec) {
+            $dataFile = $this->addDataFile(sprintf('data-wr-null-%s.avr', $codec));
+            $writersSchema = '"null"';
+            $data = null;
+            $dw = DataIO::openFile($dataFile, 'w', $writersSchema, $codec);
+            $dw->append($data);
+            $dw->close();
 
-        $dr = DataIO::openFile($dataFile);
-        $drData = (array) $dr->data();
-        $readData = array_shift($drData);
-        $dr->close();
-        $this->assertSame($data, $readData);
+            $dr = DataIO::openFile($dataFile);
+            $drData = (array)$dr->data();
+            $readData = array_shift($drData);
+            $dr->close();
+            $this->assertSame($data, $readData);
+        }
     }
 
     public function testWriteReadStringRoundTrip(): void
     {
-        $dataFile = $this->addDataFile('data-wr-str.avr');
-        $writersSchema = '"string"';
-        $data = 'foo';
-        $dw = DataIO::openFile($dataFile, 'w', $writersSchema);
-        $dw->append($data);
-        $dw->close();
+        foreach (DataIO::getValidCodecs() as $codec) {
+            $dataFile = $this->addDataFile(sprintf('data-wr-str-%s.avr', $codec));
+            $writersSchema = '"string"';
+            $data = 'foo';
+            $dw = DataIO::openFile($dataFile, 'w', $writersSchema, $codec);
+            $dw->append($data);
+            $dw->close();
 
-        $dr = DataIO::openFile($dataFile);
-        $drData = (array) $dr->data();
-        $readData = array_shift($drData);
-        $dr->close();
-        $this->assertSame($data, $readData);
+            $dr = DataIO::openFile($dataFile);
+            $drData = (array)$dr->data();
+            $readData = array_shift($drData);
+            $dr->close();
+            $this->assertSame($data, $readData);
+        }
     }
 
     public function testWriteReadRoundTrip(): void
     {
-        $dataFile = $this->addDataFile('data-wr-int.avr');
-        $writersSchema = '"int"';
-        $data = 1;
+        foreach (DataIO::getValidCodecs() as $codec) {
+            $dataFile = $this->addDataFile(sprintf('data-wr-int-%s.avr', $codec));
+            $writersSchema = '"int"';
+            $data = 1;
 
-        $dw = DataIO::openFile($dataFile, 'w', $writersSchema);
-        $dw->append(1);
-        $dw->close();
+            $dw = DataIO::openFile($dataFile, 'w', $writersSchema, $codec);
+            $dw->append(1);
+            $dw->close();
 
-        $dr = DataIO::openFile($dataFile);
-        $drData = (array) $dr->data();
-        $readData = array_shift($drData);
-        $dr->close();
-        $this->assertSame($data, $readData);
+            $dr = DataIO::openFile($dataFile);
+            $drData = (array)$dr->data();
+            $readData = array_shift($drData);
+            $dr->close();
+            $this->assertSame($data, $readData);
+        }
     }
 
     public function testWriteReadTrueRoundTrip(): void
     {
-        $dataFile = $this->addDataFile('data-wr-true.avr');
-        $writersSchema = '"boolean"';
-        $datum = true;
-        $dw = DataIO::openFile($dataFile, 'w', $writersSchema);
-        $dw->append($datum);
-        $dw->close();
+        foreach (DataIO::getValidCodecs() as $codec) {
+            $dataFile = $this->addDataFile(sprintf('data-wr-true-%s.avr', $codec));
+            $writersSchema = '"boolean"';
+            $datum = true;
+            $dw = DataIO::openFile($dataFile, 'w', $writersSchema, $codec);
+            $dw->append($datum);
+            $dw->close();
 
-        $dr = DataIO::openFile($dataFile);
-        $drData = (array) $dr->data();
-        $readDatum = array_shift($drData);
-        $dr->close();
-        $this->assertSame($datum, $readDatum);
+            $dr = DataIO::openFile($dataFile);
+            $drData = (array)$dr->data();
+            $readDatum = array_shift($drData);
+            $dr->close();
+            $this->assertSame($datum, $readDatum);
+        }
     }
 
     public function testWriteReadFalseRoundTrip(): void
     {
-        $dataFile = $this->addDataFile('data-wr-false.avr');
-        $writersSchema = '"boolean"';
-        $datum = false;
-        $dw = DataIO::openFile($dataFile, 'w', $writersSchema);
-        $dw->append($datum);
-        $dw->close();
+        foreach (DataIO::getValidCodecs() as $codec) {
+            $dataFile = $this->addDataFile(sprintf('data-wr-false-%s.avr', $codec));
+            $writersSchema = '"boolean"';
+            $datum = false;
+            $dw = DataIO::openFile($dataFile, 'w', $writersSchema, $codec);
+            $dw->append($datum);
+            $dw->close();
 
-        $dr = DataIO::openFile($dataFile);
-        $drData = (array) $dr->data();
-        $readDatum = array_shift($drData);
-        $dr->close();
-        $this->assertSame($datum, $readDatum);
+            $dr = DataIO::openFile($dataFile);
+            $drData = (array)$dr->data();
+            $readDatum = array_shift($drData);
+            $dr->close();
+            $this->assertSame($datum, $readDatum);
+        }
     }
 
     public function testWriteReadIntArrayRoundTrip(): void
     {
-        $dataFile = $this->addDataFile('data-wr-int-ary.avr');
-        $writersSchema = '"int"';
-        $data = [10, 20, 30, 40, 50, 60, 70];
-        $dw = DataIO::openFile($dataFile, 'w', $writersSchema);
-        foreach ($data as $datum) {
-            $dw->append($datum);
-        }
-        $dw->close();
+        foreach (DataIO::getValidCodecs() as $codec) {
+            $dataFile = $this->addDataFile(sprintf('data-wr-int-ary-%s.avr', $codec));
+            $writersSchema = '"int"';
+            $data = [10, 20, 30, 40, 50, 60, 70];
+            $dw = DataIO::openFile($dataFile, 'w', $writersSchema, $codec);
+            foreach ($data as $datum) {
+                $dw->append($datum);
+            }
+            $dw->close();
 
-        $dr = DataIO::openFile($dataFile);
-        $readData = $dr->data();
-        $dr->close();
-        $this->assertSame(
-            $data,
-            $readData,
-            sprintf(
-                "in: %s\nout: %s",
-                json_encode($data),
-                json_encode($readData)
-            )
-        );
+            $dr = DataIO::openFile($dataFile);
+            $readData = $dr->data();
+            $dr->close();
+            $this->assertSame(
+                $data,
+                $readData,
+                sprintf(
+                    "in: %s\nout: %s",
+                    json_encode($data),
+                    json_encode($readData)
+                )
+            );
+        }
     }
 
     public function testDifferingSchemasWithPrimitives(): void
     {
-        $dataFile = $this->addDataFile('data-prim.avr');
+        foreach (DataIO::getValidCodecs() as $codec) {
+            $dataFile = $this->addDataFile(sprintf('data-prim-%s.avr', $codec));
 
-        $writerSchema = <<<JSON
+            $writerSchema = <<<JSON
 { "type": "record",
   "name": "User",
   "fields" : [
@@ -163,33 +178,35 @@ class DataFileTest extends TestCase
       {"name": "verified", "type": "boolean", "default": "false"}
       ]}
 JSON;
-        $data = [
-            ['username' => 'john', 'age' => 25, 'verified' => true],
-            ['username' => 'ryan', 'age' => 23, 'verified' => false],
-        ];
-        $dw = DataIO::openFile($dataFile, 'w', $writerSchema);
-        foreach ($data as $datum) {
-            $dw->append($datum);
-        }
-        $dw->close();
-        $readerSchema = <<<JSON
+            $data = [
+                ['username' => 'john', 'age' => 25, 'verified' => true],
+                ['username' => 'ryan', 'age' => 23, 'verified' => false],
+            ];
+            $dw = DataIO::openFile($dataFile, 'w', $writerSchema, $codec);
+            foreach ($data as $datum) {
+                $dw->append($datum);
+            }
+            $dw->close();
+            $readerSchema = <<<JSON
       { "type": "record",
         "name": "User",
         "fields" : [
       {"name": "username", "type": "string"}
       ]}
 JSON;
-        $dr = DataIO::openFile($dataFile, 'r', $readerSchema);
-        foreach ($dr->data() as $index => $record) {
-            $this->assertSame($data[$index]['username'], $record['username']);
+            $dr = DataIO::openFile($dataFile, 'r', $readerSchema);
+            foreach ($dr->data() as $index => $record) {
+                $this->assertSame($data[$index]['username'], $record['username']);
+            }
         }
     }
 
     public function testDifferingSchemasWithComplexObjects(): void
     {
-        $dataFile = $this->addDataFile('data-complex.avr');
+        foreach (DataIO::getValidCodecs() as $codec) {
+            $dataFile = $this->addDataFile(sprintf('data-complex-%s.avr', $codec));
 
-        $writersSchema = <<<JSON
+            $writersSchema = <<<JSON
 { "type": "record",
   "name": "something",
   "fields": [
@@ -209,50 +226,51 @@ JSON;
 ]}
 JSON;
 
-        $data = [
-            [
-                'username' => 'john',
-                'something_fixed' => 'foo',
-                'something_enum' => 'hello',
-                'something_array' => [1, 2, 3],
-                'something_map' => ['a' => 1, 'b' => 2],
-                'something_record' => ['inner' => 2],
-                'something_error' => ['code' => 403],
-            ],
-            [
-                'username' => 'ryan',
-                'something_fixed' => 'bar',
-                'something_enum' => 'goodbye',
-                'something_array' => [1, 2, 3],
-                'something_map' => ['a' => 2, 'b' => 6],
-                'something_record' => ['inner' => 1],
-                'something_error' => ['code' => 401],
-            ],
-        ];
-        $dw = DataIO::openFile($dataFile, 'w', $writersSchema);
-        foreach ($data as $datum) {
-            $dw->append($datum);
-        }
-        $dw->close();
-
-        foreach ([
-                     'fixed',
-                     'enum',
-                     'record',
-                     'error',
-                     'array',
-                     'map',
-                     'union',
-                 ] as $s) {
-            $readersSchema = json_decode($writersSchema, true);
-            $dr = DataIO::openFile($dataFile, 'r', json_encode($readersSchema));
-            foreach ($dr->data() as $idx => $obj) {
-                foreach ($readersSchema['fields'] as $field) {
-                    $fieldName = $field['name'];
-                    $this->assertSame($data[$idx][$fieldName], $obj[$fieldName]);
-                }
+            $data = [
+                [
+                    'username' => 'john',
+                    'something_fixed' => 'foo',
+                    'something_enum' => 'hello',
+                    'something_array' => [1, 2, 3],
+                    'something_map' => ['a' => 1, 'b' => 2],
+                    'something_record' => ['inner' => 2],
+                    'something_error' => ['code' => 403],
+                ],
+                [
+                    'username' => 'ryan',
+                    'something_fixed' => 'bar',
+                    'something_enum' => 'goodbye',
+                    'something_array' => [1, 2, 3],
+                    'something_map' => ['a' => 2, 'b' => 6],
+                    'something_record' => ['inner' => 1],
+                    'something_error' => ['code' => 401],
+                ],
+            ];
+            $dw = DataIO::openFile($dataFile, 'w', $writersSchema, $codec);
+            foreach ($data as $datum) {
+                $dw->append($datum);
             }
-            $dr->close();
+            $dw->close();
+
+            foreach ([
+                         'fixed',
+                         'enum',
+                         'record',
+                         'error',
+                         'array',
+                         'map',
+                         'union',
+                     ] as $s) {
+                $readersSchema = json_decode($writersSchema, true);
+                $dr = DataIO::openFile($dataFile, 'r', json_encode($readersSchema));
+                foreach ($dr->data() as $idx => $obj) {
+                    foreach ($readersSchema['fields'] as $field) {
+                        $fieldName = $field['name'];
+                        $this->assertSame($data[$idx][$fieldName], $obj[$fieldName]);
+                    }
+                }
+                $dr->close();
+            }
         }
     }
 
