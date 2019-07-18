@@ -43,6 +43,8 @@ class DataFileTest extends TestCase
             $readData = array_shift($drData);
             $dr->close();
             $this->assertNull($readData);
+            $this->assertEquals($codec, $dr->getMetaDataFor(DataIO::METADATA_CODEC_ATTR));
+            $this->assertEquals($writersSchema, $dr->getMetaDataFor(DataIO::METADATA_SCHEMA_ATTR));
         }
     }
 
@@ -61,6 +63,8 @@ class DataFileTest extends TestCase
             $readData = array_shift($drData);
             $dr->close();
             $this->assertSame($data, $readData);
+            $this->assertEquals($codec, $dr->getMetaDataFor(DataIO::METADATA_CODEC_ATTR));
+            $this->assertEquals($writersSchema, $dr->getMetaDataFor(DataIO::METADATA_SCHEMA_ATTR));
         }
     }
 
@@ -79,6 +83,8 @@ class DataFileTest extends TestCase
             $readData = array_shift($drData);
             $dr->close();
             $this->assertSame($data, $readData);
+            $this->assertEquals($codec, $dr->getMetaDataFor(DataIO::METADATA_CODEC_ATTR));
+            $this->assertEquals($writersSchema, $dr->getMetaDataFor(DataIO::METADATA_SCHEMA_ATTR));
         }
     }
 
@@ -98,6 +104,8 @@ class DataFileTest extends TestCase
             $readData = array_shift($drData);
             $dr->close();
             $this->assertSame($data, $readData);
+            $this->assertEquals($codec, $dr->getMetaDataFor(DataIO::METADATA_CODEC_ATTR));
+            $this->assertEquals($writersSchema, $dr->getMetaDataFor(DataIO::METADATA_SCHEMA_ATTR));
         }
     }
 
@@ -116,6 +124,8 @@ class DataFileTest extends TestCase
             $readDatum = array_shift($drData);
             $dr->close();
             $this->assertSame($datum, $readDatum);
+            $this->assertEquals($codec, $dr->getMetaDataFor(DataIO::METADATA_CODEC_ATTR));
+            $this->assertEquals($writersSchema, $dr->getMetaDataFor(DataIO::METADATA_SCHEMA_ATTR));
         }
     }
 
@@ -134,6 +144,8 @@ class DataFileTest extends TestCase
             $readDatum = array_shift($drData);
             $dr->close();
             $this->assertSame($datum, $readDatum);
+            $this->assertEquals($codec, $dr->getMetaDataFor(DataIO::METADATA_CODEC_ATTR));
+            $this->assertEquals($writersSchema, $dr->getMetaDataFor(DataIO::METADATA_SCHEMA_ATTR));
         }
     }
 
@@ -161,6 +173,8 @@ class DataFileTest extends TestCase
                     json_encode($readData)
                 )
             );
+            $this->assertEquals($codec, $dr->getMetaDataFor(DataIO::METADATA_CODEC_ATTR));
+            $this->assertEquals($writersSchema, $dr->getMetaDataFor(DataIO::METADATA_SCHEMA_ATTR));
         }
     }
 
@@ -169,7 +183,7 @@ class DataFileTest extends TestCase
         foreach (DataIO::getValidCodecs() as $codec) {
             $dataFile = $this->addDataFile(sprintf('data-prim-%s.avr', $codec));
 
-            $writerSchema = <<<JSON
+            $writersSchema = <<<JSON
 { "type": "record",
   "name": "User",
   "fields" : [
@@ -182,7 +196,7 @@ JSON;
                 ['username' => 'john', 'age' => 25, 'verified' => true],
                 ['username' => 'ryan', 'age' => 23, 'verified' => false],
             ];
-            $dw = DataIO::openFile($dataFile, 'w', $writerSchema, $codec);
+            $dw = DataIO::openFile($dataFile, 'w', $writersSchema, $codec);
             foreach ($data as $datum) {
                 $dw->append($datum);
             }
@@ -198,6 +212,8 @@ JSON;
             foreach ($dr->data() as $index => $record) {
                 $this->assertSame($data[$index]['username'], $record['username']);
             }
+            $this->assertEquals($codec, $dr->getMetaDataFor(DataIO::METADATA_CODEC_ATTR));
+            $this->assertEquals(json_decode($writersSchema, true), json_decode($dr->getMetaDataFor(DataIO::METADATA_SCHEMA_ATTR), true));
         }
     }
 
@@ -270,6 +286,8 @@ JSON;
                     }
                 }
                 $dr->close();
+                $this->assertEquals($codec, $dr->getMetaDataFor(DataIO::METADATA_CODEC_ATTR));
+                $this->assertEquals(json_decode($writersSchema, true), json_decode($dr->getMetaDataFor(DataIO::METADATA_SCHEMA_ATTR), true));
             }
         }
     }
